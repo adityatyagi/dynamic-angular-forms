@@ -1,0 +1,50 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Dynamic Angular Forms!
+  </h1>
+
+  <section class="dynamic-angular-from">
+    <form [formGroup]="dynamicFormGroup" (ngSubmit)="onSubmit()">
+      <ng-container *ngFor="let form_element of formTemplate; let formEleIndex = index">
+        <div [ngSwitch]="form_element.type">
+
+          <!--Question Type: Textbox-->
+          <div *ngSwitchCase="'textbox'">
+            <h5>{{form_element.label}}</h5>
+            <textarea rows="3" formControlName="{{form_element.id}}"></textarea>
+            <div
+              *ngIf="dynamicFormGroup.controls[form_element.id].invalid && (dynamicFormGroup.controls[form_element.id].dirty || dynamicFormGroup.controls[form_element.id].touched)">
+              <span class="error-message">Required</span>
+            </div>
+          </div>
+
+          <!--Question Type: Radio-->
+          <div *ngSwitchCase="'radio'">
+            <h5>{{form_element.label}}</h5>
+            <ng-container *ngFor="let item of form_element.options">
+              <input type="radio" formControlName="{{form_element.id}}" [value]="item">{{item}}<br>
+            </ng-container>
+            <div
+              *ngIf="dynamicFormGroup.controls[form_element.id].invalid && (dynamicFormGroup.controls[form_element.id].dirty || dynamicFormGroup.controls[form_element.id].touched)">
+              <span class="error-message">Required</span>
+            </div>
+          </div>
+
+          <!--Question Type: Checkbox-->
+          <div *ngSwitchCase="'checkbox'">
+            <h5>{{form_element.label}}</h5>
+            <label formArrayName="{{form_element.id}}"
+              *ngFor="let option of dynamicFormGroup.controls[form_element.id].controls; let i = index">
+              <input type="checkbox" [formControlName]="i" />
+              {{formTemplate[formEleIndex].options[i]}}
+            </label>
+          </div>
+        </div>
+      </ng-container>
+      <div class="decision-buttons">
+        <button type="reset" class="btn cancel">Cancel</button>
+        <button type="submit" class="btn submit">Submit</button>
+      </div>
+    </form>
+  </section>
